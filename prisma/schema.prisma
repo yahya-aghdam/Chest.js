@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./main.db"
+}
+
+model User {
+  unique_id  String  @id @unique
+  id         String  @unique
+  name       String
+  is_banned  Boolean @default(false)
+  crypt_code String
+}
+
+model Private {
+  id            String @id @unique
+  person_one_id String
+  person_two_id String
+}
+
+model Gropue {
+  id     String @id @unique
+  admins String //we use string instead of json because of limitation in sqlite
+  users  String //we use string instead of json because of limitation in sqlite
+}
+
+model Channel {
+  id      String @id @unique
+  admins  String //we use string instead of json because of limitation in sqlite
+  members String //we use string instead of json because of limitation in sqlite
+}
+
+model Chats {
+  id         Int    @id @default(autoincrement())
+  chat_id    String
+  message    String
+  time_stamp String
+}
