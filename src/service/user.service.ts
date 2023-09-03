@@ -112,21 +112,21 @@ export class UserService {
   }
 
   //ANCHOR - Delete usre service
-  async deleteUser(userInfo: User): Promise<ResponceT> {
+  async deleteUser(unique_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass(userInfo, userDeleteSchema);
+    const pass = await check_pass({unique_id}, userDeleteSchema);
 
     if (pass.is_success) {
-      const user = await this.getUser(userInfo.unique_id);
+      const user = await this.getUser(unique_id);
 
       if (!isEmpty(user)) {
         await prisma.user.delete({
           where: {
-            unique_id: userInfo.unique_id,
+            unique_id: unique_id,
           },
         });
 

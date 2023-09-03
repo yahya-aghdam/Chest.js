@@ -1,4 +1,4 @@
-import { Body, Controller, Get,Param,Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get,Param,Post, Put } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import ResponceT from 'src/interface/responce';
 import { User } from '@prisma/client';
@@ -20,5 +20,10 @@ export class UserController {
   @Put()
   async updateUser(@Body() user:User): Promise<ResponceT> {
     return await this.userService.updateUser(user)
+  }
+
+  @Delete(":id")
+  async deleteUser(@Param("id") id: string): Promise<ResponceT> {
+    return await this.userService.deleteUser(id)
   }
 }
