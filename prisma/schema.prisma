@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   unique_id  String  @id @unique
-  id         String  @unique
+  username   String  @unique
   name       String
   is_banned  Boolean @default(false)
   crypt_code String
@@ -21,7 +21,7 @@ model Private {
   person_two_id String
 }
 
-model Gropue {
+model Groupe {
   id     String @id @unique
   admins String //we use string instead of json because of limitation in sqlite
   users  String //we use string instead of json because of limitation in sqlite
@@ -35,7 +35,7 @@ model Channel {
 
 model Chats {
   id         Int    @id @default(autoincrement())
-  chat_id    String
+  chat_id    String //private or groupe or channel id
   message    String
   time_stamp String
 }
