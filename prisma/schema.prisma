@@ -11,8 +11,6 @@ model User {
   unique_id  String  @id @unique
   username   String  @unique
   name       String
-  is_banned  Boolean @default(false)
-  crypt_code String
 }
 
 model Private {

@@ -2,6 +2,9 @@
 /dist
 /node_modules
 /prisma/migrations
+/prisma/main.db
+/prisma/main.db-journal
+package-lock.json
 
 # Logs
 logs
