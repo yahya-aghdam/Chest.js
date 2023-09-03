@@ -4,7 +4,7 @@
 /prisma/migrations
 /prisma/main.db
 /prisma/main.db-journal
-package-lock.json
+package-lock.json 
 
 # Logs
 logs
