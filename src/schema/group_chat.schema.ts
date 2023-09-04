@@ -1,13 +1,13 @@
 import Joi = require('joi');
 
-export const groupeChatPostSchema = Joi.object({
+export const groupChatPostSchema = Joi.object({
   id: Joi.string().min(12).max(30),
   name: Joi.string().min(3).max(30).required(),
   admins: Joi.string().min(3).max(30).required(),
   members: Joi.string().min(3).max(30).required(),
 });
 
-export const groupeChatPutSchema = Joi.object({
+export const groupChatPutSchema = Joi.object({
   id: Joi.string().min(12).max(30).required(),
   name: Joi.string().min(3).max(30),
   admins: Joi.string().min(3).max(30),
@@ -15,10 +15,10 @@ export const groupeChatPutSchema = Joi.object({
 });
 
 
-export const groupeChatGetSchema = Joi.object({
+export const groupChatGetSchema = Joi.object({
   id: Joi.string().min(12).max(30).required(),
 });
 
-export const groupeChatDeleteSchema = Joi.object({
+export const groupChatDeleteSchema = Joi.object({
   id: Joi.string().min(12).max(30).required(),
 });

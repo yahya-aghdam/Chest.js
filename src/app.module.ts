@@ -3,14 +3,14 @@ import {
   UserController,
   PrivateChatController,
   ChannelController,
-  GroupeChatController,
+  GroupChatController,
   ChatsController
 } from './controller';
 import {
   UserService,
   PrivateChatService,
   ChannelService,
-  GroupeChatService,
+  GroupChatService,
   ChatsService
 } from './service';
 
@@ -20,14 +20,14 @@ import {
     UserController,
     PrivateChatController,
     ChannelController,
-    GroupeChatController,
+    GroupChatController,
     ChatsController
   ],
   providers: [
     UserService,
     PrivateChatService,
     ChannelService,
-    GroupeChatService,
+    GroupChatService,
     ChatsService
   ],
 })

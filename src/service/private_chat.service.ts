@@ -53,14 +53,18 @@ export class PrivateChatService {
     const pass = await check_pass(privateChatInfo, privateChatPostSchema);
 
     if (pass.is_success) {
-      const person_one: string = JSON.parse(privateChatInfo.persons)[0];
-      const person_two: string = JSON.parse(privateChatInfo.persons)[1];
+      const persons = JSON.parse(privateChatInfo.persons.replace(/'/g, '"'));
+      const person_one: string = persons[0];
+      const person_two: string = persons[1];
+
+      const first_posibillity = `['${person_one}','${person_two}']`;
+      const secound_posibillity = `['${person_two}','${person_one}']`;
 
       const private_chat: Private_chat[] = (await prisma.private_chat.findMany({
         where: {
           OR: [
-            { persons: JSON.stringify([person_one, person_two]) },
-            { persons: JSON.stringify([person_two, person_one]) },
+            { persons: { contains: first_posibillity } },
+            { persons: { contains: secound_posibillity } },
           ],
         },
       })) as Private_chat[];

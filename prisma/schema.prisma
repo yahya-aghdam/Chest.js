@@ -18,7 +18,7 @@ model Private_chat {
   persons String //we use string instead of json because of limitation in sqlite
 }
 
-model Groupe_chat {
+model Group_chat {
   id     String @id @unique
   name   String
   admins String //we use string instead of json because of limitation in sqlite
@@ -35,7 +35,7 @@ model Channel {
 model Chats {
   id         Int    @id @default(autoincrement())
   unique_id  String @unique
-  chat_id    String //private or groupe or channel id
+  chat_id    String //private or group or channel id
   message    String
   time_stamp String
 }
