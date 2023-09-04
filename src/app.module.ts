@@ -1,10 +1,34 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './controller/user.controller';
-import { UserService } from './service/user.service';
+import {
+  UserController,
+  PrivateChatController,
+  ChannelController,
+  GroupeChatController,
+  ChatsController
+} from './controller';
+import {
+  UserService,
+  PrivateChatService,
+  ChannelService,
+  GroupeChatService,
+  ChatsService
+} from './service';
 
 @Module({
   imports: [],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [
+    UserController,
+    PrivateChatController,
+    ChannelController,
+    GroupeChatController,
+    ChatsController
+  ],
+  providers: [
+    UserService,
+    PrivateChatService,
+    ChannelService,
+    GroupeChatService,
+    ChatsService
+  ],
 })
 export class AppModule {}

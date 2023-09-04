@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get,Param,Post, Put } from '@nestjs/common';
-import { UserService } from '../service/user.service';
+import { UserService } from '../service';
 import ResponceT from 'src/interface/responce';
 import { User } from '@prisma/client';
 

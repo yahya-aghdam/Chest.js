@@ -7,7 +7,7 @@ import {
   userGetSchema,
   userPostSchema,
   userPutSchema,
-} from '../schema/user.schema';
+} from '../schema';
 import prisma from '../lib/prisma';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
@@ -90,7 +90,7 @@ export class UserService {
     const pass = await check_pass(userInfo, userPutSchema);
 
     if (pass.is_success) {
-      const user = await this.getUser(userInfo.unique_id);
+      const user = (await this.getUser(userInfo.unique_id)).data;
       if (!isEmpty(user)) {
         await prisma.user.update({
           where: {
@@ -118,10 +118,10 @@ export class UserService {
       log: undefined,
     };
 
-    const pass = await check_pass({unique_id}, userDeleteSchema);
+    const pass = await check_pass({ unique_id }, userDeleteSchema);
 
     if (pass.is_success) {
-      const user = await this.getUser(unique_id);
+      const user = (await this.getUser(unique_id)).data;
 
       if (!isEmpty(user)) {
         await prisma.user.delete({

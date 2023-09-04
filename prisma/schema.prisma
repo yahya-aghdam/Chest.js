@@ -8,31 +8,33 @@ datasource db {
 }
 
 model User {
-  unique_id  String  @id @unique
-  username   String  @unique
-  name       String
+  unique_id String @id @unique
+  username  String @unique
+  name      String
 }
 
-model Private {
-  id            String @id @unique
-  person_one_id String
-  person_two_id String
+model Private_chat {
+  id      String @id @unique
+  persons String //we use string instead of json because of limitation in sqlite
 }
 
-model Groupe {
+model Groupe_chat {
   id     String @id @unique
+  name   String
   admins String //we use string instead of json because of limitation in sqlite
   users  String //we use string instead of json because of limitation in sqlite
 }
 
 model Channel {
   id      String @id @unique
+  name    String
   admins  String //we use string instead of json because of limitation in sqlite
   members String //we use string instead of json because of limitation in sqlite
 }
 
 model Chats {
   id         Int    @id @default(autoincrement())
+  unique_id  String @unique
   chat_id    String //private or groupe or channel id
   message    String
   time_stamp String
