@@ -30,7 +30,7 @@ model Group_chat {
 }
 
 model Channel {
-  id        String @id @map("_id")
+  id        String @id @map("_id") 
   unique_id String @unique //channel id
   name      String
   admins    Json   @default("[]")
