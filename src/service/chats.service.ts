@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import ResponceT from '../interface/responce';
-import { Chats } from '@prisma/client';
+import { Chats, User } from '@prisma/client';
 import check_pass from '../lib/checkers';
 import {
   chatsDeleteSchema,
+  chatsGetAllSchema,
   chatsGetSchema,
   chatsPostSchema,
   chatsPutSchema,
@@ -48,6 +49,42 @@ export class ChatsService {
     return responce;
   }
 
+  //ANCHOR - Get private chat info service
+  async getAllChatsOfAUser(unique_id: string): Promise<ResponceT> {
+    const responce: ResponceT = {
+      is_success: false,
+      log: undefined,
+    };
+
+    const pass = await check_pass({ unique_id }, chatsGetAllSchema);
+
+    if (pass.is_success) {
+      const user: User = (await prisma.user.findUnique({
+        where: {
+          unique_id: unique_id,
+        },
+      })) as User;
+
+      const user_chats_list = JSON.parse(user.chats.replace(/'/g, '"'));
+
+      let chats: Chats[];
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [index, item] of user_chats_list.entries()) {
+        const chat: Chats = (await this.getChats(item)).data;
+        chats.push(chat);
+      }
+
+      responce.is_success = true;
+      responce.log = 'All cahts finded successfully';
+      responce.data = chats;
+    } else {
+      responce.log = pass.log;
+    }
+
+    return responce;
+  }
+
   //ANCHOR - Create private chat service
   async createChats(chatsInfo: Chats): Promise<ResponceT> {
     const responce: ResponceT = {
@@ -64,6 +101,8 @@ export class ChatsService {
       await prisma.chats.create({
         data: chatsInfo,
       });
+
+
 
       responce.data = chatsInfo;
       responce.is_success = true;
@@ -86,10 +125,10 @@ export class ChatsService {
 
     if (pass.is_success) {
       const chats: Chats = await prisma.chats.findUnique({
-        where:{
-          unique_id: chatsInfo.unique_id
-        }
-      })
+        where: {
+          unique_id: chatsInfo.unique_id,
+        },
+      });
 
       if (!isEmpty(chats)) {
         await prisma.chats.update({
@@ -121,10 +160,10 @@ export class ChatsService {
 
     if (pass.is_success) {
       const chats: Chats = await prisma.chats.findUnique({
-        where:{
-          unique_id: unique_id
-        }
-      })
+        where: {
+          unique_id: unique_id,
+        },
+      });
 
       if (!isEmpty(chats)) {
         await prisma.chats.delete({

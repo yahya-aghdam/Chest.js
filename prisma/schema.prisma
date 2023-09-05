@@ -3,37 +3,43 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./main.db"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  unique_id String @id @unique //user id
+  id        String @id @map("_id")
+  unique_id String @unique //user id
   username  String @unique
   name      String
+  chats     String @default("[]")
 }
 
 model Private_chat {
-  id      String @id @unique
-  persons String //we use string instead of json because of limitation in sqlite
+  id        String @id @map("_id")
+  unique_id String @unique //private chat id
+  persons   Json   @default("[]")
 }
 
 model Group_chat {
-  id      String @id @unique
-  name    String
-  admins  String //we use string instead of json because of limitation in sqlite
-  members String //we use string instead of json because of limitation in sqlite
+  id        String @id @map("_id")
+  unique_id String @unique //group id
+  name      String
+  admins    Json   @default("[]")
+  members   Json   @default("[]")
 }
 
 model Channel {
+  id        String @id @map("_id")
   unique_id String @unique //channel id
   name      String
-  admins    String //we use string instead of json because of limitation in sqlite
-  members   String //we use string instead of json because of limitation in sqlite
+  admins    Json   @default("[]")
+  members   Json   @default("[]")
 }
 
 model Chats {
-  id               Int    @id @default(autoincrement()) //to arrange chats
+  id               String @id @map("_id")
+  custom_id        Int    @unique // to arrange chats
   unique_id        String @unique //to call chats
   sender_unique_id String //sender unique id
   chat_id          String //private or group or channel id

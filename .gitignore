@@ -5,6 +5,7 @@
 /prisma/main.db
 /prisma/main.db-journal
 package-lock.json 
+.env
 
 # Logs
 logs

@@ -19,3 +19,7 @@ export const chatsGetSchema = Joi.object({
 export const chatsDeleteSchema = Joi.object({
   unique_id: Joi.string().min(12).max(30).required(),
 });
+
+export const chatsGetAllSchema = Joi.object({
+  unique_id: Joi.string().min(12).max(30).required(),
+});
