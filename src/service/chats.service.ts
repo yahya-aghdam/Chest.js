@@ -85,7 +85,11 @@ export class ChatsService {
     const pass = await check_pass(chatsInfo, chatsPutSchema);
 
     if (pass.is_success) {
-      const chats: Chats = (await this.getChats(chatsInfo.unique_id)).data;
+      const chats: Chats = await prisma.chats.findUnique({
+        where:{
+          unique_id: chatsInfo.unique_id
+        }
+      })
 
       if (!isEmpty(chats)) {
         await prisma.chats.update({
@@ -116,7 +120,11 @@ export class ChatsService {
     const pass = await check_pass({ unique_id }, chatsDeleteSchema);
 
     if (pass.is_success) {
-      const chats: Chats = (await this.getChats(unique_id)).data;
+      const chats: Chats = await prisma.chats.findUnique({
+        where:{
+          unique_id: unique_id
+        }
+      })
 
       if (!isEmpty(chats)) {
         await prisma.chats.delete({

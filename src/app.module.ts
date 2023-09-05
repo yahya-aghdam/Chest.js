@@ -13,9 +13,10 @@ import {
   GroupChatService,
   ChatsService
 } from './service';
+import { EventsModule } from './events/events.module';
 
 @Module({
-  imports: [],
+  imports: [EventsModule],
   controllers: [
     UserController,
     PrivateChatController,

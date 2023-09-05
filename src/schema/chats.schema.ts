@@ -2,6 +2,7 @@ import Joi = require('joi');
 
 export const chatsPostSchema = Joi.object({
   chat_id: Joi.string().min(3).max(30).required(),
+  sender_unique_id: Joi.string().min(3).max(30).required(),
   message: Joi.string().min(1).max(300).required(),
 });
 

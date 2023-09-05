@@ -33,9 +33,10 @@ model Channel {
 }
 
 model Chats {
-  id         Int    @id @default(autoincrement()) //to arrange chats
-  unique_id  String @unique //to call chats
-  chat_id    String //private or group or channel id
-  message    String
-  time_stamp String
+  id               Int    @id @default(autoincrement()) //to arrange chats
+  unique_id        String @unique //to call chats
+  sender_unique_id String //sender unique id
+  chat_id          String //private or group or channel id
+  message          String
+  time_stamp       String
 }
