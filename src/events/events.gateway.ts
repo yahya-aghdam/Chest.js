@@ -7,6 +7,7 @@ import {
 import { Server } from 'socket.io';
 import IncomeMessageT from 'src/interface/incomeMessage';
 import ResponceT from 'src/interface/responce';
+import prisma from 'src/lib/prisma';
 import { ChatsService } from 'src/service';
 
 @WebSocketGateway({
@@ -21,6 +22,8 @@ export class EventsGateway {
   @SubscribeMessage('sendMessage')
   async createMessage(@MessageBody() data: IncomeMessageT): Promise<ResponceT> {
     const chats = new ChatsService()
+    const chats_count:number = await prisma.chats.count()
+    data.custom_id = chats_count + 1
     const responce: ResponceT = await chats.createChats(data);
 
     return responce;

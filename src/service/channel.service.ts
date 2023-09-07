@@ -15,18 +15,18 @@ import { isEmpty } from 'lodash';
 @Injectable()
 export class ChannelService {
   //ANCHOR - Get channel info service
-  async getChannel(unique_id: string): Promise<ResponceT> {
+  async getChannel(id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ unique_id }, channelGetSchema);
+    const pass = await check_pass({ id }, channelGetSchema);
 
     if (pass.is_success) {
       const channel: Channel = (await prisma.channel.findUnique({
         where: {
-          unique_id: unique_id,
+          id: id,
         },
       })) as Channel;
 
@@ -56,11 +56,11 @@ export class ChannelService {
 
     if (pass.is_success) {
       const channel: Channel = (
-        await this.getChannel(channelInfo.unique_id)
+        await this.getChannel(channelInfo.id)
       ).data;
 
       if (isEmpty(channel)) {
-        channelInfo.unique_id = id_generator();
+        channelInfo.id = id_generator();
         await prisma.channel.create({
           data: channelInfo,
         });
@@ -88,12 +88,12 @@ export class ChannelService {
     const pass = await check_pass(channelInfo, channelPutSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(channelInfo.unique_id)).data;
+      const channel: Channel = (await this.getChannel(channelInfo.id)).data;
 
       if (!isEmpty(channel)) {
         await prisma.channel.update({
           where: {
-            unique_id: channelInfo.unique_id,
+            id: channelInfo.id,
           },
           data:channelInfo
         });
@@ -110,21 +110,21 @@ export class ChannelService {
   }
 
   //ANCHOR - Delete channel service
-  async deleteChannel(unique_id: string): Promise<ResponceT> {
+  async deleteChannel(id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ unique_id }, channelDeleteSchema);
+    const pass = await check_pass({ id }, channelDeleteSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(unique_id)).data;
+      const channel: Channel = (await this.getChannel(id)).data;
 
       if (!isEmpty(channel)) {
         await prisma.channel.delete({
           where: {
-            unique_id: unique_id,
+            id: id,
           },
         });
         responce.is_success = true;

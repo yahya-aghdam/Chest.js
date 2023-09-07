@@ -50,18 +50,18 @@ export class ChatsService {
   }
 
   //ANCHOR - Get private chat info service
-  async getAllChatsOfAUser(unique_id: string): Promise<ResponceT> {
+  async getAllChatsOfAUser(id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ unique_id }, chatsGetAllSchema);
+    const pass = await check_pass({ id }, chatsGetAllSchema);
 
     if (pass.is_success) {
       const user: User = (await prisma.user.findUnique({
         where: {
-          unique_id: unique_id,
+          id: id,
         },
       })) as User;
 
@@ -95,7 +95,7 @@ export class ChatsService {
     const pass = await check_pass(chatsInfo, chatsPostSchema);
 
     if (pass.is_success) {
-      chatsInfo.unique_id = id_generator();
+      chatsInfo.id = id_generator();
       chatsInfo.time_stamp = JSON.stringify(Date.now());
 
       await prisma.chats.create({
@@ -126,14 +126,14 @@ export class ChatsService {
     if (pass.is_success) {
       const chats: Chats = await prisma.chats.findUnique({
         where: {
-          unique_id: chatsInfo.unique_id,
+          id: chatsInfo.id,
         },
       });
 
       if (!isEmpty(chats)) {
         await prisma.chats.update({
           where: {
-            unique_id: chatsInfo.unique_id,
+            id: chatsInfo.id,
           },
           data: chatsInfo,
         });
@@ -150,25 +150,25 @@ export class ChatsService {
   }
 
   //ANCHOR - Delete private chat service
-  async deleteChats(unique_id: string): Promise<ResponceT> {
+  async deleteChats(id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ unique_id }, chatsDeleteSchema);
+    const pass = await check_pass({ id }, chatsDeleteSchema);
 
     if (pass.is_success) {
       const chats: Chats = await prisma.chats.findUnique({
         where: {
-          unique_id: unique_id,
+          id: id,
         },
       });
 
       if (!isEmpty(chats)) {
         await prisma.chats.delete({
           where: {
-            unique_id: unique_id,
+            id: id,
           },
         });
         responce.is_success = true;

@@ -15,18 +15,18 @@ import { isEmpty } from 'lodash';
 @Injectable()
 export class UserService {
   //ANCHOR - Get user info service
-  async getUser(unique_id: string): Promise<ResponceT> {
+  async getUser(id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ unique_id }, userGetSchema);
+    const pass = await check_pass({ id }, userGetSchema);
 
     if (pass.is_success) {
       const user: User = (await prisma.user.findUnique({
         where: {
-          unique_id: unique_id,
+          id: id,
         },
       })) as User;
 
@@ -61,7 +61,7 @@ export class UserService {
       });
 
       if (isEmpty(user)) {
-        userInfo.unique_id = id_generator();
+        userInfo.id = id_generator();
 
         await prisma.user.create({
           data: userInfo,
@@ -90,11 +90,11 @@ export class UserService {
     const pass = await check_pass(userInfo, userPutSchema);
 
     if (pass.is_success) {
-      const user = (await this.getUser(userInfo.unique_id)).data;
+      const user = (await this.getUser(userInfo.id)).data;
       if (!isEmpty(user)) {
         await prisma.user.update({
           where: {
-            unique_id: userInfo.unique_id,
+            id: userInfo.id,
           },
           data: userInfo,
         });
@@ -112,21 +112,21 @@ export class UserService {
   }
 
   //ANCHOR - Delete usre service
-  async deleteUser(unique_id: string): Promise<ResponceT> {
+  async deleteUser(id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ unique_id }, userDeleteSchema);
+    const pass = await check_pass({ id }, userDeleteSchema);
 
     if (pass.is_success) {
-      const user = (await this.getUser(unique_id)).data;
+      const user = (await this.getUser(id)).data;
 
       if (!isEmpty(user)) {
         await prisma.user.delete({
           where: {
-            unique_id: unique_id,
+            id: id,
           },
         });
 

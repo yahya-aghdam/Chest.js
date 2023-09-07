@@ -8,39 +8,34 @@ datasource db {
 }
 
 model User {
-  id        String @id @map("_id")
-  unique_id String @unique //user id
+  id        String @id @map("_id") //user id
   username  String @unique
   name      String
   chats     String @default("[]")
 }
 
 model Private_chat {
-  id        String @id @map("_id")
-  unique_id String @unique //private chat id
+  id        String @id @map("_id") //private chat id
   persons   Json   @default("[]")
 }
 
 model Group_chat {
-  id        String @id @map("_id")
-  unique_id String @unique //group id
+  id        String @id @map("_id") //group id
   name      String
   admins    Json   @default("[]")
   members   Json   @default("[]")
 }
 
 model Channel {
-  id        String @id @map("_id") 
-  unique_id String @unique //channel id
+  id        String @id @map("_id") //channel id
   name      String
   admins    Json   @default("[]")
   members   Json   @default("[]")
 }
 
 model Chats {
-  id               String @id @map("_id")
+  id               String @id @map("_id") //chat id
   custom_id        Int    @unique // to arrange chats
-  unique_id        String @unique //to call chats
   sender_unique_id String //sender unique id
   chat_id          String //private or group or channel id
   message          String

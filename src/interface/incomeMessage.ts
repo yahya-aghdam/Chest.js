@@ -5,4 +5,5 @@ export default interface IncomeMessageT {
     id: any
     unique_id:string
     time_stamp:string
+    custom_id:number
 }

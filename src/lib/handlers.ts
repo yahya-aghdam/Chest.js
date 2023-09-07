@@ -21,13 +21,13 @@ export function id_generator(input_id: string | undefined = undefined) {
 }
 
 export async function userChatsUpdater(
-  unique_id: string,
+  id: string,
   chat_id: string,
   add: boolean = true,
 ) {
   const user: User = (await prisma.user.findUnique({
     where: {
-      unique_id: unique_id,
+      id: id,
     },
   })) as User;
 
@@ -42,7 +42,7 @@ export async function userChatsUpdater(
 
   await prisma.user.update({
     where: {
-      unique_id: unique_id,
+      id: id,
     },
     data: {
       chats: `${userChats}`,
