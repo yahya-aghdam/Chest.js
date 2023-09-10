@@ -4,32 +4,33 @@ import {
   PrivateChatController,
   ChannelController,
   GroupChatController,
-  ChatsController
+  ChatsController,
 } from './controller';
 import {
   UserService,
   PrivateChatService,
   ChannelService,
   GroupChatService,
-  ChatsService
+  ChatsService,
 } from './service';
-import { EventsModule } from './events/events.module';
+import EventsModule from './events/events.module';
+import DBModule from './schema/db.module';
 
 @Module({
-  imports: [EventsModule],
+  imports: [EventsModule, DBModule],
   controllers: [
     UserController,
     PrivateChatController,
     ChannelController,
     GroupChatController,
-    ChatsController
+    ChatsController,
   ],
   providers: [
     UserService,
     PrivateChatService,
     ChannelService,
     GroupChatService,
-    ChatsService
+    ChatsService,
   ],
 })
 export class AppModule {}
