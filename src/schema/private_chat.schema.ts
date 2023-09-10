@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 
 //* Schema
 @Schema()
-export class Privvate_chat {
+export class Private_chat {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -16,8 +16,8 @@ export class Privvate_chat {
   persons: string[];
 }
 
-export type Privvate_chatDocument = mongoose.HydratedDocument<Privvate_chat>;
-export const Privvate_chatSchema = SchemaFactory.createForClass(Privvate_chat);
+export type Private_chatDocument = mongoose.HydratedDocument<Private_chat>;
+export const Private_chatSchema = SchemaFactory.createForClass(Private_chat);
 
 // * Joi
 export const privateChatPostSchema = Joi.object({

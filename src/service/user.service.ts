@@ -1,37 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import ResponceT from '../interface/responce';
-import { User } from '@prisma/client';
 import check_pass from '../lib/checkers';
 import {
+  User,
   userDeleteSchema,
   userGetSchema,
   userPostSchema,
   userPutSchema,
 } from '../schema';
-import prisma from '../lib/prisma';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { MongoGenericRepository } from 'src/core';
 
 @Injectable()
 export class UserService {
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  private user = new MongoGenericRepository(this.userModel);
+
   //ANCHOR - Get user info service
-  async getUser(id: string): Promise<ResponceT> {
+  async getUser(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ id }, userGetSchema);
+    const pass = await check_pass({ custom_id }, userGetSchema);
 
     if (pass.is_success) {
-      const user: User = (await prisma.user.findUnique({
-        where: {
-          id: id,
-        },
-      })) as User;
+      const findedUser: User = await this.user.get(custom_id);
 
-      if (!isEmpty(user)) {
-        responce.data = user;
+      if (!isEmpty(findedUser)) {
+        responce.data = findedUser;
         responce.is_success = true;
         responce.log = 'User finded successfully';
       } else {
@@ -54,18 +55,12 @@ export class UserService {
     const pass = await check_pass(userInfo, userPostSchema);
 
     if (pass.is_success) {
-      const user = await prisma.user.findUnique({
-        where: {
-          username: userInfo.username,
-        },
-      });
+      const findedUser:User = await this.user.getOneBy("username", userInfo.username)
 
-      if (isEmpty(user)) {
-        userInfo.id = id_generator();
+      if (isEmpty(findedUser)) {
+        userInfo.custom_id = id_generator();
 
-        await prisma.user.create({
-          data: userInfo,
-        });
+        await this.user.create(userInfo)
 
         responce.is_success = true;
         responce.log = 'User created successfully';
@@ -90,14 +85,9 @@ export class UserService {
     const pass = await check_pass(userInfo, userPutSchema);
 
     if (pass.is_success) {
-      const user = (await this.getUser(userInfo.id)).data;
+      const user = (await this.getUser(userInfo.custom_id)).data;
       if (!isEmpty(user)) {
-        await prisma.user.update({
-          where: {
-            id: userInfo.id,
-          },
-          data: userInfo,
-        });
+        await this.user.update(userInfo.custom_id,userInfo)
 
         responce.is_success = true;
         responce.log = 'User updated successfully';
@@ -112,23 +102,19 @@ export class UserService {
   }
 
   //ANCHOR - Delete usre service
-  async deleteUser(id: string): Promise<ResponceT> {
+  async deleteUser(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ id }, userDeleteSchema);
+    const pass = await check_pass({ custom_id }, userDeleteSchema);
 
     if (pass.is_success) {
-      const user = (await this.getUser(id)).data;
+      const user = (await this.getUser(custom_id)).data;
 
       if (!isEmpty(user)) {
-        await prisma.user.delete({
-          where: {
-            id: id,
-          },
-        });
+        await this.user.delete(custom_id)
 
         responce.is_success = true;
         responce.log = 'User deleted successfully';
