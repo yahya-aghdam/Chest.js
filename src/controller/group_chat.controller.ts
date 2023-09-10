@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get,Param,Post, Put } from '@nestjs/common';
 import { GroupChatService } from '../service';
 import ResponceT from 'src/interface/responce';
-import { Group_chat } from '@prisma/client';
+import { Group_chat } from 'src/schema';
 
 @Controller('api/group_chat')
 export class GroupChatController {

@@ -1,15 +1,13 @@
+import { CheckResult } from 'src/interface/checkResult';
 import { errorLogger } from './handlers';
 
-interface Result {
-  is_success: boolean;
-  log: any;
-}
+
 
 export default async function check_pass(
   obj: any,
   schema: any,
-): Promise<Result> {
-  const result: Result = {
+): Promise<CheckResult> {
+  const result: CheckResult = {
     is_success: false,
     log: 'Every thing is ok!',
   };

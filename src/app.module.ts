@@ -11,7 +11,7 @@ import {
   PrivateChatService,
   ChannelService,
   GroupChatService,
-  ChatsService,
+  ChatService,
 } from './service';
 import EventsModule from './events/events.module';
 import DBModule from './schema/db.module';
@@ -30,7 +30,7 @@ import DBModule from './schema/db.module';
     PrivateChatService,
     ChannelService,
     GroupChatService,
-    ChatsService,
+    ChatService,
   ],
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 export * from './channel.schema'
-export * from './chats.schema'
+export * from './chat.schema'
 export * from './group_chat.schema'
 export * from './private_chat.schema'
 export * from './user.schema'

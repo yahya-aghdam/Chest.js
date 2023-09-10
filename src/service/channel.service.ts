@@ -1,34 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import ResponceT from '../interface/responce';
-import { Channel } from '@prisma/client';
 import check_pass from '../lib/checkers';
 import {
+  Channel,
   channelDeleteSchema,
   channelGetSchema,
   channelPostSchema,
-  channelPutSchema
+  channelPutSchema,
 } from '../schema';
-import prisma from '../lib/prisma';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
+import { InjectModel } from '@nestjs/mongoose';
+import { MongoGenericRepository } from 'src/core';
+import { Model } from 'mongoose';
+import { CheckResult } from 'src/interface/checkResult';
 
 @Injectable()
 export class ChannelService {
+  constructor(
+    @InjectModel(Channel.name)
+    private channelModel: Model<Channel>,
+  ) {}
+  private channel = new MongoGenericRepository(this.channelModel);
+
   //ANCHOR - Get channel info service
-  async getChannel(id: string): Promise<ResponceT> {
+  async getChannel(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ id }, channelGetSchema);
+    const pass: CheckResult = await check_pass({ custom_id }, channelGetSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (await prisma.channel.findUnique({
-        where: {
-          id: id,
-        },
-      })) as Channel;
+      const channel: Channel = await this.channel.get(custom_id);
 
       if (!isEmpty(channel)) {
         responce.data = channel;
@@ -51,19 +56,15 @@ export class ChannelService {
       log: undefined,
     };
 
-    const pass = await check_pass(channelInfo, channelPostSchema);
-    
+    const pass: CheckResult = await check_pass(channelInfo, channelPostSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (
-        await this.getChannel(channelInfo.id)
-      ).data;
+      const channel: Channel = (await this.getChannel(channelInfo.custom_id))
+        .data;
 
       if (isEmpty(channel)) {
-        channelInfo.id = id_generator();
-        await prisma.channel.create({
-          data: channelInfo,
-        });
+        channelInfo.custom_id = id_generator();
+        await this.channel.create(channelInfo)
 
         responce.data = channelInfo;
         responce.is_success = true;
@@ -85,18 +86,15 @@ export class ChannelService {
       log: undefined,
     };
 
-    const pass = await check_pass(channelInfo, channelPutSchema);
+    const pass: CheckResult = await check_pass(channelInfo, channelPutSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(channelInfo.id)).data;
+      const channel: Channel = (await this.getChannel(channelInfo.custom_id))
+        .data;
 
       if (!isEmpty(channel)) {
-        await prisma.channel.update({
-          where: {
-            id: channelInfo.id,
-          },
-          data:channelInfo
-        });
+        await this.channel.update(channelInfo.custom_id,channelInfo)
+
         responce.is_success = true;
         responce.log = 'Channel deleted successfully';
       } else {
@@ -110,23 +108,23 @@ export class ChannelService {
   }
 
   //ANCHOR - Delete channel service
-  async deleteChannel(id: string): Promise<ResponceT> {
+  async deleteChannel(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ id }, channelDeleteSchema);
+    const pass: CheckResult = await check_pass(
+      { custom_id },
+      channelDeleteSchema,
+    );
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(id)).data;
+      const channel: Channel = (await this.getChannel(custom_id)).data;
 
       if (!isEmpty(channel)) {
-        await prisma.channel.delete({
-          where: {
-            id: id,
-          },
-        });
+        await this.channel.delete(custom_id)
+        
         responce.is_success = true;
         responce.log = 'Channel deleted successfully';
       } else {

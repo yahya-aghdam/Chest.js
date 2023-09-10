@@ -12,6 +12,7 @@ import { isEmpty } from 'lodash';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongoGenericRepository } from 'src/core';
 import { Model } from 'mongoose';
+import { CheckResult } from 'src/interface/checkResult';
 
 @Injectable()
 export class PrivateChatService {
@@ -28,7 +29,7 @@ export class PrivateChatService {
       log: undefined,
     };
 
-    const pass = await check_pass({ custom_id }, privateChatGetSchema);
+    const pass: CheckResult = await check_pass({ custom_id }, privateChatGetSchema);
 
     if (pass.is_success) {
       const privateChat: Private_chat = await this.privateChat.get(custom_id);
@@ -54,7 +55,7 @@ export class PrivateChatService {
       log: undefined,
     };
 
-    const pass = await check_pass(privateChatInfo, privateChatPostSchema);
+    const pass: CheckResult = await check_pass(privateChatInfo, privateChatPostSchema);
 
     if (pass.is_success) {
       const private_chat: Private_chat[] = await this.privateChat.getAllBy(
@@ -86,15 +87,18 @@ export class PrivateChatService {
       log: undefined,
     };
 
-    const pass = await check_pass({ custom_id }, privateChatDeleteSchema);
+    const pass: CheckResult = await check_pass(
+      { custom_id },
+      privateChatDeleteSchema,
+    );
 
     if (pass.is_success) {
       const private_chat: Private_chat = (await this.getPrivateChat(custom_id))
         .data;
 
       if (!isEmpty(private_chat)) {
-        await this.privateChat.delete(custom_id)
-        
+        await this.privateChat.delete(custom_id);
+
         responce.is_success = true;
         responce.log = 'Private chat deleted successfully';
       } else {

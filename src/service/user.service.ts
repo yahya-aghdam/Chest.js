@@ -13,6 +13,7 @@ import { isEmpty } from 'lodash';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MongoGenericRepository } from 'src/core';
+import { CheckResult } from 'src/interface/checkResult';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
       log: undefined,
     };
 
-    const pass = await check_pass({ custom_id }, userGetSchema);
+    const pass: CheckResult = await check_pass({ custom_id }, userGetSchema);
 
     if (pass.is_success) {
       const findedUser: User = await this.user.get(custom_id);
@@ -52,7 +53,7 @@ export class UserService {
       log: undefined,
     };
 
-    const pass = await check_pass(userInfo, userPostSchema);
+    const pass: CheckResult = await check_pass(userInfo, userPostSchema);
 
     if (pass.is_success) {
       const findedUser:User = await this.user.getOneBy("username", userInfo.username)
@@ -82,7 +83,7 @@ export class UserService {
       log: undefined,
     };
 
-    const pass = await check_pass(userInfo, userPutSchema);
+    const pass: CheckResult = await check_pass(userInfo, userPutSchema);
 
     if (pass.is_success) {
       const user = (await this.getUser(userInfo.custom_id)).data;
@@ -108,7 +109,7 @@ export class UserService {
       log: undefined,
     };
 
-    const pass = await check_pass({ custom_id }, userDeleteSchema);
+    const pass: CheckResult = await check_pass({ custom_id }, userDeleteSchema);
 
     if (pass.is_success) {
       const user = (await this.getUser(custom_id)).data;

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get,Param,Post } from '@nestjs/common';
 import { PrivateChatService } from '../service';
 import ResponceT from 'src/interface/responce';
-import { Private_chat } from '@prisma/client';
+import { Private_chat } from 'src/schema';
 
 @Controller('api/private_chat')
 export class PrivateChatController {

@@ -22,7 +22,7 @@ export class User {
   name: string;
 
   @Prop()
-  chats: string[];
+  chats_id_list: string[];
 }
 
 export type UserDocument = mongoose.HydratedDocument<User>;
@@ -39,7 +39,7 @@ export const userPutSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
   username: Joi.string().min(3).max(30),
   name: Joi.string().min(3).max(30),
-  chats: Joi.object(),
+  chats_id_list: Joi.object(),
 });
 
 export const userDeleteSchema = Joi.object({

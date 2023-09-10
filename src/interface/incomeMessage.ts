@@ -1,9 +1,9 @@
 export default interface IncomeMessageT {
-    sender_unique_id: string
-    chat_id: string
+    sender_custom_id: string
+    reciver_custom_id: string
+    custom_id: string
     message: string
-    id: any
-    unique_id:string
     time_stamp:string
-    custom_id:number
+    is_mentioned: boolean
+    mentioned_person_custom_id: string
 }

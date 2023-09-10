@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 
 //* Schema
 @Schema()
-export class Chats {
+export class Chat {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -25,12 +25,10 @@ export class Chats {
   @Prop({
     required: true,
   })
-  admins: string[];
-
-  @Prop({
-    required: true,
-  })
   is_mentioned: boolean;
+
+  @Prop()
+  mentioned_person_custom_id: string;
 
   @Prop({
     required: true,
@@ -43,32 +41,33 @@ export class Chats {
   time_stamp: string;
 }
 
-export type ChatsDocument = mongoose.HydratedDocument<Chats>;
-export const ChatsSchema = SchemaFactory.createForClass(Chats);
+export type ChatDocument = mongoose.HydratedDocument<Chat>;
+export const ChatSchema = SchemaFactory.createForClass(Chat);
 
 // * Joi
-export const chatsPostSchema = Joi.object({
-  custom_id: Joi.string().min(3).max(30).required(),
+export const chatPostSchema = Joi.object({
+  custom_id: Joi.string().min(12).max(30).required(),
   sender_custom_id: Joi.string().min(3).max(30).required(),
   reciver_custom_id: Joi.string().min(3).max(30).required(),
   is_mentioned: Joi.boolean().required(),
+  mentioned_person_custom_id: Joi.string().min(11).max(30),
   message: Joi.string().min(1).max(300).required(),
 });
 
-export const chatsPutSchema = Joi.object({
+export const chatPutSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
   message: Joi.string().min(1).max(300),
   time_stamp: Joi.string().min(8).max(14),
 });
 
-export const chatsGetSchema = Joi.object({
+export const chatGetSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
 });
 
-export const chatsDeleteSchema = Joi.object({
+export const chatDeleteSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
 });
 
-export const chatsGetAllSchema = Joi.object({
+export const chatGetAllSchema = Joi.object({
   id: Joi.string().min(12).max(30).required(),
 });

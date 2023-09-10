@@ -1,34 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import ResponceT from '../interface/responce';
-import { Group_chat } from '@prisma/client';
 import check_pass from '../lib/checkers';
 import {
+  Group_chat,
   groupChatDeleteSchema,
   groupChatGetSchema,
   groupChatPostSchema,
   groupChatPutSchema
 } from '../schema';
-import prisma from '../lib/prisma';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
+import { InjectModel } from '@nestjs/mongoose';
+import { MongoGenericRepository } from 'src/core';
+import { Model } from 'mongoose';
+import { CheckResult } from 'src/interface/checkResult';
 
 @Injectable()
 export class GroupChatService {
+  constructor(
+    @InjectModel(Group_chat.name)
+    private groupChatModel: Model<Group_chat>,
+  ) {}
+  private groupChat = new MongoGenericRepository(this.groupChatModel);
+
   //ANCHOR - Get private chat info service
-  async getGroupChat(id: string): Promise<ResponceT> {
+  async getGroupChat(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ id }, groupChatGetSchema);
+    const pass:CheckResult = await check_pass({ custom_id }, groupChatGetSchema);
 
     if (pass.is_success) {
-      const group_chat: Group_chat = (await prisma.group_chat.findUnique({
-        where: {
-          id: id,
-        },
-      })) as Group_chat;
+      const group_chat: Group_chat = await this.groupChat.get(custom_id)
 
       if (!isEmpty(group_chat)) {
         responce.data = group_chat;
@@ -51,19 +56,18 @@ export class GroupChatService {
       log: undefined,
     };
 
-    const pass = await check_pass(group_chatInfo, groupChatPostSchema);
+    const pass:CheckResult = await check_pass(group_chatInfo, groupChatPostSchema);
     
 
     if (pass.is_success) {
       const group_chat: Group_chat = (
-        await this.getGroupChat(group_chatInfo.id)
+        await this.getGroupChat(group_chatInfo.custom_id)
       ).data;
 
       if (isEmpty(group_chat)) {
-        group_chatInfo.id = id_generator();
-        await prisma.group_chat.create({
-          data: group_chatInfo,
-        });
+        group_chatInfo.custom_id = id_generator();
+        
+        await this.groupChat.create(group_chatInfo)
 
         responce.data = group_chatInfo;
         responce.is_success = true;
@@ -85,18 +89,14 @@ export class GroupChatService {
       log: undefined,
     };
 
-    const pass = await check_pass(group_chatInfo, groupChatPutSchema);
+    const pass:CheckResult = await check_pass(group_chatInfo, groupChatPutSchema);
 
     if (pass.is_success) {
-      const group_chat: Group_chat = (await this.getGroupChat(group_chatInfo.id)).data;
+      const group_chat: Group_chat = (await this.getGroupChat(group_chatInfo.custom_id)).data;
 
       if (!isEmpty(group_chat)) {
-        await prisma.group_chat.update({
-          where: {
-            id: group_chatInfo.id,
-          },
-          data:group_chatInfo
-        });
+        await this.groupChat.update(group_chatInfo.custom_id,group_chatInfo)
+
         responce.is_success = true;
         responce.log = 'Group chat updated successfully';
       } else {
@@ -110,23 +110,20 @@ export class GroupChatService {
   }
 
   //ANCHOR - Delete private chat service
-  async deleteGroupChat(id: string): Promise<ResponceT> {
+  async deleteGroupChat(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass = await check_pass({ id }, groupChatDeleteSchema);
+    const pass:CheckResult = await check_pass({ custom_id }, groupChatDeleteSchema);
 
     if (pass.is_success) {
-      const group_chat: Group_chat = (await this.getGroupChat(id)).data;
+      const group_chat: Group_chat = (await this.getGroupChat(custom_id)).data;
 
       if (!isEmpty(group_chat)) {
-        await prisma.group_chat.delete({
-          where: {
-            id: id,
-          },
-        });
+        await this.groupChat.delete(custom_id)
+        
         responce.is_success = true;
         responce.log = 'Group chat deleted successfully';
       } else {
