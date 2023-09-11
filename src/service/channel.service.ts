@@ -10,16 +10,15 @@ import {
 } from '../schema';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
-import { InjectModel } from '@nestjs/mongoose';
-import { MongoGenericRepository } from 'src/core';
+import { MongoGenericRepository } from 'src/model';
 import { Model } from 'mongoose';
 import { CheckResult } from 'src/interface/checkResult';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ChannelService {
   constructor(
-    @InjectModel(Channel.name)
-    private channelModel: Model<Channel>,
+    @InjectModel(Channel.name) private channelModel: Model<Channel>,
   ) {}
   private channel = new MongoGenericRepository(this.channelModel);
 
@@ -33,10 +32,10 @@ export class ChannelService {
     const pass: CheckResult = await check_pass({ custom_id }, channelGetSchema);
 
     if (pass.is_success) {
-      const channel: Channel = await this.channel.get(custom_id);
+      const findedChannel: Channel = await this.channel.get(custom_id);
 
-      if (!isEmpty(channel)) {
-        responce.data = channel;
+      if (!isEmpty(findedChannel)) {
+        responce.data = findedChannel;
         responce.is_success = true;
         responce.log = 'Channel finded successfully';
       } else {
@@ -59,12 +58,13 @@ export class ChannelService {
     const pass: CheckResult = await check_pass(channelInfo, channelPostSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(channelInfo.custom_id))
-        .data;
+      const findedChannel: Channel = (
+        await this.getChannel(channelInfo.custom_id)
+      ).data;
 
-      if (isEmpty(channel)) {
+      if (isEmpty(findedChannel)) {
         channelInfo.custom_id = id_generator();
-        await this.channel.create(channelInfo)
+        await this.channel.create(channelInfo);
 
         responce.data = channelInfo;
         responce.is_success = true;
@@ -89,11 +89,12 @@ export class ChannelService {
     const pass: CheckResult = await check_pass(channelInfo, channelPutSchema);
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(channelInfo.custom_id))
-        .data;
+      const findedChannel: Channel = (
+        await this.getChannel(channelInfo.custom_id)
+      ).data;
 
-      if (!isEmpty(channel)) {
-        await this.channel.update(channelInfo.custom_id,channelInfo)
+      if (!isEmpty(findedChannel)) {
+        await this.channel.update(channelInfo.custom_id, channelInfo);
 
         responce.is_success = true;
         responce.log = 'Channel deleted successfully';
@@ -120,11 +121,11 @@ export class ChannelService {
     );
 
     if (pass.is_success) {
-      const channel: Channel = (await this.getChannel(custom_id)).data;
+      const findedChannel: Channel = (await this.getChannel(custom_id)).data;
 
-      if (!isEmpty(channel)) {
-        await this.channel.delete(custom_id)
-        
+      if (!isEmpty(findedChannel)) {
+        await this.channel.delete(custom_id);
+
         responce.is_success = true;
         responce.log = 'Channel deleted successfully';
       } else {

@@ -9,18 +9,19 @@ import {
 } from '../schema';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
-import { InjectModel } from '@nestjs/mongoose';
-import { MongoGenericRepository } from 'src/core';
+import { MongoGenericRepository } from 'src/model';
 import { Model } from 'mongoose';
 import { CheckResult } from 'src/interface/checkResult';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class PrivateChatService {
   constructor(
-    @InjectModel(Private_chat.name)
-    private privateChatModel: Model<Private_chat>,
+    @InjectModel(Private_chat.name) private privateChatModel: Model<Private_chat>
   ) {}
   private privateChat = new MongoGenericRepository(this.privateChatModel);
+    
+  
 
   //ANCHOR - Get private info service
   async getPrivateChat(custom_id: string): Promise<ResponceT> {
@@ -32,10 +33,10 @@ export class PrivateChatService {
     const pass: CheckResult = await check_pass({ custom_id }, privateChatGetSchema);
 
     if (pass.is_success) {
-      const privateChat: Private_chat = await this.privateChat.get(custom_id);
+      const findedPrivateChat: Private_chat = await this.privateChat.get(custom_id);
 
-      if (!isEmpty(privateChat)) {
-        responce.data = privateChat;
+      if (!isEmpty(findedPrivateChat)) {
+        responce.data = findedPrivateChat;
         responce.is_success = true;
         responce.log = 'Private chat finded successfully';
       } else {
@@ -50,6 +51,7 @@ export class PrivateChatService {
 
   //ANCHOR - Create private service
   async createPrivateChat(privateChatInfo: Private_chat): Promise<ResponceT> {
+    
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
@@ -58,12 +60,12 @@ export class PrivateChatService {
     const pass: CheckResult = await check_pass(privateChatInfo, privateChatPostSchema);
 
     if (pass.is_success) {
-      const private_chat: Private_chat[] = await this.privateChat.getAllBy(
+      const findedPrivateChats: Private_chat[] = await this.privateChat.getAllBy(
         'persons',
         privateChatInfo.persons,
       );
 
-      if (isEmpty(private_chat)) {
+      if (isEmpty(findedPrivateChats)) {
         privateChatInfo.custom_id = id_generator();
         await this.privateChat.create(privateChatInfo);
 
@@ -82,6 +84,7 @@ export class PrivateChatService {
 
   //ANCHOR - Delete usre service
   async deletePrivateChat(custom_id: string): Promise<ResponceT> {
+    
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
@@ -93,10 +96,10 @@ export class PrivateChatService {
     );
 
     if (pass.is_success) {
-      const private_chat: Private_chat = (await this.getPrivateChat(custom_id))
+      const findedPrivateChat: Private_chat = (await this.getPrivateChat(custom_id))
         .data;
 
-      if (!isEmpty(private_chat)) {
+      if (!isEmpty(findedPrivateChat)) {
         await this.privateChat.delete(custom_id);
 
         responce.is_success = true;

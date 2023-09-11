@@ -1,12 +1,12 @@
 import Joi = require('joi');
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 //* Schema
 @Schema()
 export class Channel {
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     unique: true,
   })
@@ -28,7 +28,7 @@ export class Channel {
   members: string[];
 }
 
-export type ChannelDocument = mongoose.HydratedDocument<Channel>;
+export type ChannelDocument = HydratedDocument<Channel>;
 export const ChannelSchema = SchemaFactory.createForClass(Channel);
 
 // * Joi

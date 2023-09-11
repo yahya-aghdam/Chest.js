@@ -12,19 +12,19 @@ import {
 } from '../schema';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
-import { InjectModel } from '@nestjs/mongoose';
-import { MongoGenericRepository } from 'src/core';
+import { MongoGenericRepository } from 'src/model';
 import { Model } from 'mongoose';
 import { CheckResult } from 'src/interface/checkResult';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @InjectModel(Chat.name)
-    private chatModel: Model<Chat>,
-    @InjectModel(User.name) private userModel: Model<User>
+    @InjectModel(Chat.name) private chatModel: Model<Chat>,
+    @InjectModel(Chat.name) private userModel: Model<User>,
   ) {}
   private chat = new MongoGenericRepository(this.chatModel);
+  private user = new MongoGenericRepository(this.userModel);
 
   //ANCHOR - Get private chat info service
   async getChat(chat_id: string): Promise<ResponceT> {
@@ -36,10 +36,10 @@ export class ChatService {
     const pass: CheckResult = await check_pass({ chat_id }, chatGetSchema);
 
     if (pass.is_success) {
-      const chat: Chat[] = await this.chat.getAllBy("chat_id",chat_id)
+      const findedChat: Chat[] = await this.chat.getAllBy('chat_id', chat_id);
 
-      if (!isEmpty(chat)) {
-        responce.data = chat;
+      if (!isEmpty(findedChat)) {
+        responce.data = findedChat;
         responce.is_success = true;
         responce.log = 'Chat finded successfully';
       } else {
@@ -59,22 +59,19 @@ export class ChatService {
       log: undefined,
     };
 
-
-
     const pass: CheckResult = await check_pass({ custom_id }, chatGetAllSchema);
 
     if (pass.is_success) {
-      const user = new MongoGenericRepository(this.userModel)
-      const findedUser: User = await user.get(custom_id)
+      const findedUser: User = await this.user.get(custom_id);
 
-      const user_chat_list:string[] = findedUser.chats_id_list
+      const user_chat_list: string[] = findedUser.chats_id_list;
 
       let chats: Chat[];
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [index, item] of user_chat_list.entries()) {
-        const chat: Chat = (await this.getChat(item)).data;
-        chats.push(chat);
+        const findedChat: Chat = (await this.getChat(item)).data;
+        chats.push(findedChat);
       }
 
       responce.is_success = true;
@@ -100,8 +97,7 @@ export class ChatService {
       chatInfo.custom_id = id_generator();
       chatInfo.time_stamp = JSON.stringify(Date.now());
 
-      await this.chat.create(chatInfo)
-
+      await this.chat.create(chatInfo);
 
       responce.data = chatInfo;
       responce.is_success = true;
@@ -123,10 +119,10 @@ export class ChatService {
     const pass: CheckResult = await check_pass(chatInfo, chatPutSchema);
 
     if (pass.is_success) {
-      const chat: Chat = (await this.getChat(chatInfo.custom_id)).data
+      const findedChat: Chat = (await this.getChat(chatInfo.custom_id)).data;
 
-      if (!isEmpty(chat)) {
-        await this.chat.update(chatInfo.custom_id,chatInfo)
+      if (!isEmpty(findedChat)) {
+        await this.chat.update(chatInfo.custom_id, chatInfo);
 
         responce.is_success = true;
         responce.log = 'Chat updated successfully';
@@ -150,10 +146,10 @@ export class ChatService {
     const pass = await check_pass({ custom_id }, chatDeleteSchema);
 
     if (pass.is_success) {
-      const chat: Chat = (await this.getChat(custom_id)).data
+      const findedChat: Chat = (await this.getChat(custom_id)).data;
 
-      if (!isEmpty(chat)) {
-        await this.chat.delete(custom_id)
+      if (!isEmpty(findedChat)) {
+        await this.chat.delete(custom_id);
 
         responce.is_success = true;
         responce.log = 'Chat deleted successfully';

@@ -1,12 +1,12 @@
 import Joi = require('joi');
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 //* Schema
 @Schema()
 export class Group_chat {
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     unique: true,
   })
@@ -31,7 +31,7 @@ export class Group_chat {
   members: string[];
 }
 
-export type Group_chatDocument = mongoose.HydratedDocument<Group_chat>;
+export type Group_chatDocument = HydratedDocument<Group_chat>;
 export const Group_chatSchema = SchemaFactory.createForClass(Group_chat);
 
 // * Joi

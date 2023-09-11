@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Model } from 'mongoose';
 import { Server } from 'socket.io';
-import { MongoGenericRepository } from 'src/core';
+import { MongoGenericRepository } from 'src/model';
 import IncomeMessageT from 'src/interface/incomeMessage';
 import ResponceT from 'src/interface/responce';
 import { Chat } from 'src/schema';

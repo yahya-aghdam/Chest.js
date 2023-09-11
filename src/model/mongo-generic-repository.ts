@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { IGenericRepository } from './';
+import { IGenericRepository } from '.';
 
 export class MongoGenericRepository<T> implements IGenericRepository<T> {
   private _repository: Model<T>;
@@ -16,8 +16,8 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
   }
 
   // Get
-  get(id: string): Promise<any> {
-    return this._repository.findById(id).populate(this._populateOnFind).exec();
+  get(custom_id: string): Promise<any> {
+    return this._repository.findOne({custom_id}).populate(this._populateOnFind).exec();
   }
 
   getOneBy(key: any, value: any): Promise<any> {
@@ -39,8 +39,8 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
   }
 
   // Update
-  update(id: string, item: T): Promise<T> {
-    return this._repository.findOneAndUpdate({ custom_id: id }, item);
+  update(custom_id: string, item: T): Promise<T> {
+    return this._repository.findOneAndUpdate({ custom_id: custom_id }, item);
   }
 
   updateOneBy(key: any, value: any, item: T): Promise<any> {
@@ -51,9 +51,9 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
   }
 
   // Delete
-  delete(id: string): Promise<any> {
+  delete(custom_id: string): Promise<any> {
     return this._repository
-      .findByIdAndDelete(id)
+      .findByIdAndDelete(custom_id)
       .populate(this._populateOnFind)
       .exec();
   }

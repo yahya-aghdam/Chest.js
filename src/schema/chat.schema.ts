@@ -1,12 +1,12 @@
 import Joi = require('joi');
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 //* Schema
 @Schema()
 export class Chat {
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     unique: true,
   })
@@ -41,7 +41,7 @@ export class Chat {
   time_stamp: string;
 }
 
-export type ChatDocument = mongoose.HydratedDocument<Chat>;
+export type ChatDocument = HydratedDocument<Chat>;
 export const ChatSchema = SchemaFactory.createForClass(Chat);
 
 // * Joi

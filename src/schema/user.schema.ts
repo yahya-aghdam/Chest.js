@@ -1,12 +1,12 @@
 import Joi = require('joi');
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 //* Schema
 @Schema()
 export class User {
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
     required: true,
     unique: true,
   })
@@ -25,7 +25,7 @@ export class User {
   chats_id_list: string[];
 }
 
-export type UserDocument = mongoose.HydratedDocument<User>;
+export type UserDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);
 
 // * Joi

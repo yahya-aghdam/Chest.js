@@ -10,14 +10,16 @@ import {
 } from '../schema';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
-import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MongoGenericRepository } from 'src/core';
+import { MongoGenericRepository } from 'src/model';
 import { CheckResult } from 'src/interface/checkResult';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
   private user = new MongoGenericRepository(this.userModel);
 
   //ANCHOR - Get user info service
@@ -56,12 +58,15 @@ export class UserService {
     const pass: CheckResult = await check_pass(userInfo, userPostSchema);
 
     if (pass.is_success) {
-      const findedUser:User = await this.user.getOneBy("username", userInfo.username)
+      const findedUser: User = await this.user.getOneBy(
+        'username',
+        userInfo.username,
+      );
 
       if (isEmpty(findedUser)) {
         userInfo.custom_id = id_generator();
 
-        await this.user.create(userInfo)
+        await this.user.create(userInfo);
 
         responce.is_success = true;
         responce.log = 'User created successfully';
@@ -86,9 +91,9 @@ export class UserService {
     const pass: CheckResult = await check_pass(userInfo, userPutSchema);
 
     if (pass.is_success) {
-      const user = (await this.getUser(userInfo.custom_id)).data;
-      if (!isEmpty(user)) {
-        await this.user.update(userInfo.custom_id,userInfo)
+      const findedUser = (await this.getUser(userInfo.custom_id)).data;
+      if (!isEmpty(findedUser)) {
+        await this.user.update(userInfo.custom_id, userInfo);
 
         responce.is_success = true;
         responce.log = 'User updated successfully';
@@ -112,10 +117,10 @@ export class UserService {
     const pass: CheckResult = await check_pass({ custom_id }, userDeleteSchema);
 
     if (pass.is_success) {
-      const user = (await this.getUser(custom_id)).data;
+      const findedUser = (await this.getUser(custom_id)).data;
 
-      if (!isEmpty(user)) {
-        await this.user.delete(custom_id)
+      if (!isEmpty(findedUser)) {
+        await this.user.delete(custom_id);
 
         responce.is_success = true;
         responce.log = 'User deleted successfully';

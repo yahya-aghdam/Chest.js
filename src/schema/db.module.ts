@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { 
+import {
   Channel,
   ChannelSchema,
   Chat,
@@ -10,18 +10,48 @@ import {
   Group_chatSchema,
   Private_chat,
   Private_chatSchema,
-  User, 
-  UserSchema ,
+  User,
+  UserSchema,
 } from './';
+import {
+  UserController,
+  PrivateChatController,
+  ChannelController,
+  GroupChatController,
+  ChatsController,
+} from '../controller';
+import {
+  UserService,
+  PrivateChatService,
+  ChannelService,
+  GroupChatService,
+  ChatService,
+} from '../service';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([
+      { name: Channel.name, schema: ChannelSchema },
+      { name: Chat.name, schema: ChatSchema },
+      { name: Group_chat.name, schema: Group_chatSchema },
+      { name: Private_chat.name, schema: Private_chatSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
     MongooseModule.forRoot(process.env.DATABASE_URL),
-    MongooseModule.forFeature([{ name: Channel.name, schema: ChannelSchema }]),
-    MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
-    MongooseModule.forFeature([{ name: Group_chat.name, schema: Group_chatSchema }]),
-    MongooseModule.forFeature([{ name: Private_chat.name, schema: Private_chatSchema }]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+  ],
+  controllers: [
+    UserController,
+    PrivateChatController,
+    ChannelController,
+    GroupChatController,
+    ChatsController,
+  ],
+  providers: [
+    UserService,
+    PrivateChatService,
+    ChannelService,
+    GroupChatService,
+    ChatService,
   ],
 })
-export default class DBModule {}
+export class DBModule {}
