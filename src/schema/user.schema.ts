@@ -39,7 +39,7 @@ export const userPutSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
   username: Joi.string().min(3).max(30),
   name: Joi.string().min(3).max(30),
-  chats_id_list: Joi.object(),
+  chats_id_list: Joi.array(),
 });
 
 export const userDeleteSchema = Joi.object({

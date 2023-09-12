@@ -22,7 +22,7 @@ export const Private_chatSchema = SchemaFactory.createForClass(Private_chat);
 // * Joi
 export const privateChatPostSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30),
-  persons: Joi.object().required(),
+  persons: Joi.array().required(),
 });
 
 export const privateChatDeleteSchema = Joi.object({

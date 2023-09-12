@@ -60,12 +60,16 @@ export class PrivateChatService {
     const pass: CheckResult = await check_pass(privateChatInfo, privateChatPostSchema);
 
     if (pass.is_success) {
-      const findedPrivateChats: Private_chat[] = await this.privateChat.getAllBy(
+      const findedPrivateChats_one: Private_chat[] = await this.privateChat.getAllBy(
         'persons',
         privateChatInfo.persons,
       );
+      const findedPrivateChats_two: Private_chat[] = await this.privateChat.getAllBy(
+        'persons',
+        [privateChatInfo.persons[1],privateChatInfo.persons[0]],
+      );
 
-      if (isEmpty(findedPrivateChats)) {
+      if (isEmpty(findedPrivateChats_one) && isEmpty(findedPrivateChats_two)) {
         privateChatInfo.custom_id = id_generator();
         await this.privateChat.create(privateChatInfo);
 

@@ -21,7 +21,7 @@ import { InjectModel } from '@nestjs/mongoose';
 export class ChatService {
   constructor(
     @InjectModel(Chat.name) private chatModel: Model<Chat>,
-    @InjectModel(Chat.name) private userModel: Model<User>,
+    @InjectModel(User.name) private userModel: Model<User>,
   ) {}
   private chat = new MongoGenericRepository(this.chatModel);
   private user = new MongoGenericRepository(this.userModel);
