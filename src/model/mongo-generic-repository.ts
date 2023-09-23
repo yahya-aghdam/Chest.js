@@ -40,7 +40,7 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
 
   // Update
   update(custom_id: string, item: T): Promise<T> {
-    return this._repository.findOneAndUpdate({ custom_id: custom_id }, item);
+    return this._repository.findOneAndUpdate({ "custom_id": custom_id }, item);
   }
 
   updateOneBy(key: any, value: any, item: T): Promise<any> {

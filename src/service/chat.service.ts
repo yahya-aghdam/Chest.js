@@ -27,16 +27,16 @@ export class ChatService {
   private user = new MongoGenericRepository(this.userModel);
 
   //ANCHOR - Get private chat info service
-  async getChat(chat_id: string): Promise<ResponceT> {
+  async getChat(custom_id: string): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
 
-    const pass: CheckResult = await check_pass({ chat_id }, chatGetSchema);
+    const pass: CheckResult = await check_pass({ custom_id }, chatGetSchema);
 
     if (pass.is_success) {
-      const findedChat: Chat[] = await this.chat.getAllBy('chat_id', chat_id);
+      const findedChat: Chat[] = await this.chat.get(custom_id);
 
       if (!isEmpty(findedChat)) {
         responce.data = findedChat;
@@ -66,11 +66,20 @@ export class ChatService {
 
       const user_chat_list: string[] = findedUser.chats_id_list;
 
-      let chats: Chat[];
+      const chats: any = [];
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [index, item] of user_chat_list.entries()) {
-        const findedChat: Chat = (await this.getChat(item)).data;
+        const findedChat: Chat[] = await this.chat.getAllBy(
+          'chat_room_id',
+          item,
+        );
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const [index, item] of findedChat.entries()) {
+          item.is_notified = true;
+          await this.chat.update(item.custom_id, item);
+        }
         chats.push(findedChat);
       }
 
@@ -98,6 +107,23 @@ export class ChatService {
       chatInfo.time_stamp = JSON.stringify(Date.now());
 
       await this.chat.create(chatInfo);
+
+      //update users chat list
+      const senderUserInfo: User = await this.user.get(
+        chatInfo.sender_custom_id,
+      );
+      if (!senderUserInfo.chats_id_list.includes(chatInfo.chat_room_id)) {
+        senderUserInfo.chats_id_list.push(chatInfo.chat_room_id);
+        await this.user.update(chatInfo.sender_custom_id, senderUserInfo);
+      }
+
+      const reciverUserInfo: User = await this.user.get(
+        chatInfo.reciver_custom_id,
+      );
+      if (!reciverUserInfo.chats_id_list.includes(chatInfo.chat_room_id)) {
+        reciverUserInfo.chats_id_list.push(chatInfo.chat_room_id);
+        await this.user.update(chatInfo.sender_custom_id, reciverUserInfo);
+      }
 
       responce.data = chatInfo;
       responce.is_success = true;
@@ -150,6 +176,23 @@ export class ChatService {
 
       if (!isEmpty(findedChat)) {
         await this.chat.delete(custom_id);
+
+        //update users chat list
+        const senderUserInfo: User = await this.user.get(
+          findedChat.sender_custom_id,
+        );
+        senderUserInfo.chats_id_list = senderUserInfo.chats_id_list.filter(
+          (item) => item !== custom_id,
+        );
+        await this.user.update(findedChat.sender_custom_id, senderUserInfo);
+
+        const reciverUserInfo: User = await this.user.get(
+          findedChat.reciver_custom_id,
+        );
+        reciverUserInfo.chats_id_list = reciverUserInfo.chats_id_list.filter(
+          (item) => item !== custom_id,
+        );
+        await this.user.update(findedChat.sender_custom_id, reciverUserInfo);
 
         responce.is_success = true;
         responce.log = 'Chat deleted successfully';

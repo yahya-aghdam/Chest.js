@@ -25,6 +25,7 @@ export class User {
   chats_id_list: string[];
 }
 
+
 export type UserDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);
 
