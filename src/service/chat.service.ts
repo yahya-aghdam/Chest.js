@@ -53,12 +53,14 @@ export class ChatService {
   }
 
   //ANCHOR - Get private chat info service
-  async getAllChatsOfAUser(custom_id: string): Promise<ResponceT> {
+  async getAllChatsOfAUserBy(
+    custom_id: string,
+    getNotified: boolean = false,
+  ): Promise<ResponceT> {
     const responce: ResponceT = {
       is_success: false,
       log: undefined,
     };
-
     const pass: CheckResult = await check_pass({ custom_id }, chatGetAllSchema);
 
     if (pass.is_success) {
@@ -69,18 +71,23 @@ export class ChatService {
       const chats: any = [];
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [index, item] of user_chat_list.entries()) {
-        const findedChat: Chat[] = await this.chat.getAllBy(
-          'chat_room_id',
-          item,
-        );
-
+      for (let i = 0; i < user_chat_list.length; i++) {
+        const getByObj = {
+          reciver_custom_id: custom_id,
+        };
+        if (getNotified) {
+          getByObj['is_notified'] = false;
+        }
+        const findedChat: Chat[] = await this.chat.getAllBy(getByObj);
+ 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [index, item] of findedChat.entries()) {
           item.is_notified = true;
           await this.chat.update(item.custom_id, item);
         }
-        chats.push(findedChat);
+        if (!isEmpty(findedChat)) {
+          chats.push(findedChat);
+        }
       }
 
       responce.is_success = true;

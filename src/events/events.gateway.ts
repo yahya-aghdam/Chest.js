@@ -11,6 +11,7 @@ import ResponceT from 'src/interface/responce';
 import { Chat, User } from 'src/schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { ChatService } from 'src/service';
+import { isEmpty } from 'lodash';
 
 @WebSocketGateway({
   cors: {
@@ -24,23 +25,24 @@ export class EventsGateway {
   ) {}
 
   private chat = new ChatService(this.chatModel, this.userModel);
-
-  private interval: NodeJS.Timeout;
-
-  // Custom method to periodically send data
-  private async sendRecivedMessagePeriodically(chatInfo: {
-    custom_id: string;
-  }) {
-    this.interval = setInterval(async () => {
-      const data = (await this.chat.getAllChatsOfAUser(chatInfo.custom_id))
-        .data;
-      this.server.emit('reciveMessage', data);
-    }, 2000); // Send data every 1 second
-  }
+  private notificationInterval: NodeJS.Timeout;
 
   @WebSocketServer()
   server: Server;
-
+ 
+  // Custom method to periodically send data
+  private async sendRecivedMessagePeriodically(userInfo: {
+    custom_id: string;
+  }) {
+    this.notificationInterval = setInterval(async () => {
+      const data = (await this.chat.getAllChatsOfAUserBy(userInfo.custom_id,true))
+        .data;
+      if (!isEmpty(data)) {
+        this.server.emit('sendMessageNotification', data);
+      }
+    }, 5000); // Send data every 5 second
+  }
+ 
   @SubscribeMessage('sendMessage')
   async createMessage(
     @MessageBody() chatInfo: IncomeMessageT,
@@ -48,18 +50,28 @@ export class EventsGateway {
     return await this.chat.createChat(chatInfo);
   }
 
-  @SubscribeMessage('reciveMessage')
-  startSendingData(@MessageBody() chatInfo: { custom_id: string }) {
-    this.sendRecivedMessagePeriodically(chatInfo);
+  @SubscribeMessage('reciveAllMessages')
+  async getAllMessages(
+    @MessageBody() userInfo: { custom_id: string },
+  ): Promise<ResponceT> {
+    return await this.chat.getAllChatsOfAUserBy(userInfo.custom_id);
+  }
+ 
+  // find and send new message notification every 1 sec
+  @SubscribeMessage('sendMessageNotification')
+  async getNewMessages(@MessageBody() userInfo: { custom_id: string }) {
+    await this.sendRecivedMessagePeriodically({
+      custom_id: userInfo.custom_id,
+    });
   }
 
-  @SubscribeMessage('stopSendingRecivedMessage')
-  stopSendingData(): ResponceT {
-    // Clear the interval when needed
-    clearInterval(this.interval);
+  // Stop notification send
+  @SubscribeMessage('stopSendingMessageNotification')
+  stopSendingData() {
+    clearInterval(this.notificationInterval);
     return {
       is_success: true,
-      log: 'Stopped successfully',
+      log: 'Sending message notification stopped successfully',
     };
   }
 

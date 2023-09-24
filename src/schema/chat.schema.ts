@@ -29,16 +29,19 @@ export class Chat {
 
   @Prop({
     required: true,
+    default: false
   })
   is_read: boolean;
 
   @Prop({
     required: true,
+    default: false
   })
   is_notified: boolean;
 
   @Prop({
     required: true,
+    default: false
   })
   is_mentioned: boolean;
 
@@ -58,14 +61,12 @@ export class Chat {
 
 export type ChatDocument = HydratedDocument<Chat>;
 export const ChatSchema = SchemaFactory.createForClass(Chat);
-
+ 
 // * Joi
 export const chatPostSchema = Joi.object({
   sender_custom_id: Joi.string().min(3).max(30).required(),
   reciver_custom_id: Joi.string().min(3).max(30).required(),
   chat_room_id: Joi.string().min(3).max(30).required(),
-  is_read: Joi.boolean().required(),
-  is_notified: Joi.boolean().required(),
   is_mentioned: Joi.boolean().required(),
   mentioned_person_custom_id: Joi.string().min(11).max(30),
   message: Joi.string().min(1).max(300).required(),

@@ -31,9 +31,9 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
     return this._repository.find().populate(this._populateOnFind).exec();
   }
 
-  getAllBy(key: any, value: any): Promise<T[]> {
+  getAllBy(obj:any): Promise<T[]> {
     return this._repository
-      .find({ [key]: value })
+      .find(obj)
       .populate(this._populateOnFind)
       .exec();
   }
