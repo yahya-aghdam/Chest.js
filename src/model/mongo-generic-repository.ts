@@ -51,10 +51,14 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
   }
 
   updateOneBy(key: any, value: any, item: T): Promise<any> {
-    return this._repository
-      .updateOne({ [key]: value }, item)
-      .populate(this._populateOnFind)
-      .exec();
+    try {
+      return this._repository
+        .updateOne({ [key]: value }, item)
+        .populate(this._populateOnFind)
+        .exec();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   // Delete
