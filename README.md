@@ -1,6 +1,6 @@
 # Chest.js
 
-![License](https://img.shields.io/badge/License-MIT-blue)
+![License](https://img.shields.io/badge/License-MIT-blue) 
 
 Chestjs is a platform made with nestjs and mongodb for online chat.
 You can use it with REST API and WebSocket.
