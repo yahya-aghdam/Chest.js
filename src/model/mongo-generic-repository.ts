@@ -17,7 +17,7 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
 
   // Get
   get(custom_id: string): Promise<any> {
-    return this._repository.findOne({custom_id}).populate(this._populateOnFind).exec();
+    return this._repository.findOne({"custom_id":custom_id}).populate(this._populateOnFind).exec();
   }
 
   getOneBy(key: any, value: any): Promise<any> {
