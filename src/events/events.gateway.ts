@@ -6,11 +6,11 @@ import {
 } from '@nestjs/websockets';
 import { Model } from 'mongoose';
 import { Server } from 'socket.io';
-import IncomeMessageT from 'src/interface/incomeMessage';
-import ResponceT from 'src/interface/responce';
-import { Chat, User } from 'src/schema';
+import IncomeMessageT from '../interface/incomeMessage';
+import ResponceT from '../interface/responce';
+import { Chat, User } from '../schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { ChatService } from 'src/service';
+import { ChatService } from '../service';
 import { isEmpty } from 'lodash';
 
 @WebSocketGateway({

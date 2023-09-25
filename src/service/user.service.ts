@@ -11,8 +11,8 @@ import {
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
 import { Model } from 'mongoose';
-import { MongoGenericRepository } from 'src/model';
-import { CheckResult } from 'src/interface/checkResult';
+import { MongoGenericRepository } from '../model';
+import { CheckResult } from '../interface/checkResult';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()

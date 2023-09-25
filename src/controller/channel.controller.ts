@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get,Param,Post, Put } from '@nestjs/common';
 import { ChannelService } from '../service';
-import ResponceT from 'src/interface/responce';
-import { Channel } from 'src/schema';
+import ResponceT from '../interface/responce';
+import { Channel } from '../schema';
 
 @Controller('api/channel')
 export class ChannelController {

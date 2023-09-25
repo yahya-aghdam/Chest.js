@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get,Param,Post, Put } from '@nestjs/common';
 import { UserService } from '../service';
-import ResponceT from 'src/interface/responce';
-import { User } from 'src/schema';
+import ResponceT from '../interface/responce';
+import { User } from '../schema';
 
 @Controller('api/user')
 export class UserController {

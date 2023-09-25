@@ -1,4 +1,4 @@
-import { CheckResult } from 'src/interface/checkResult';
+import { CheckResult } from '../interface/checkResult';
 import { errorLogger } from './handlers';
 
 

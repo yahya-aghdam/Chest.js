@@ -7,7 +7,7 @@ import {
   PrivateChatController,
   ChannelController,
   GroupChatController,
-  ChatsController,
+  ChatController,
 } from './controller';
 import {
   UserService,
@@ -47,7 +47,7 @@ import {
     PrivateChatController,
     ChannelController,
     GroupChatController,
-    ChatsController,
+    ChatController,
   ],
   providers: [
     UserService,

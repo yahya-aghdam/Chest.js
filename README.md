@@ -1,6 +1,9 @@
 # Chest.js
 
-![License](https://img.shields.io/badge/License-MIT-blue) 
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Version](https://img.shields.io/badge/Version-1.0.1-orange)
+![TypeScript](https://img.shields.io/badge/TypeScript-20-blue)
+[![npm](https://img.shields.io/npm/dt/your-package.svg)](https://www.npmjs.com/package/your-package)
 
 Chestjs is a platform made with nestjs and mongodb for online chat.
 You can use it with REST API and WebSocket.
@@ -35,6 +38,7 @@ You can use it with REST API and WebSocket.
   - [WebSocket](#websocket)
     - [Sending message](#sending-message)
     - [Reciving message](#reciving-message)
+  - [License](#license)
 
 ## Possibilities
 
@@ -379,3 +383,15 @@ Eplanation: Start to get new message notification
 | Field     | Type   | Minimum Length | Maximum Length | Required |
 | --------- | ------ | -------------- | -------------- | -------- |
 | custom_id | String | 12 characters  | 30 characters  | Yes      |
+
+<hr>
+</br>
+</br>
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+The MIT License is a permissive open-source license that allows you to freely use, modify, distribute, and sublicense this software for both commercial and non-commercial purposes. You can find the full text of the MIT License in the [LICENSE](LICENSE) file included with this project.
+
+Feel free to fork this project and use it in your own work, but please make sure to give proper attribution and include the original license text.

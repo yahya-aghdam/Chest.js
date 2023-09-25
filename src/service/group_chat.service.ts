@@ -10,9 +10,9 @@ import {
 } from '../schema';
 import { id_generator } from '../lib/handlers';
 import { isEmpty } from 'lodash';
-import { MongoGenericRepository } from 'src/model';
+import { MongoGenericRepository } from '../model';
 import { Model } from 'mongoose';
-import { CheckResult } from 'src/interface/checkResult';
+import { CheckResult } from '../interface/checkResult';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()

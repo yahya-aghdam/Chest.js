@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get,Param,Post, Put } from '@nestjs/common';
 import { ChatService } from '../service';
-import ResponceT from 'src/interface/responce';
-import { Chat } from 'src/schema';
+import ResponceT from '../interface/responce';
+import { Chat } from '../schema';
 
 @Controller('api/chat')
 export class ChatController {
@@ -13,13 +13,13 @@ export class ChatController {
   }
 
   @Post()
-  async createChat(@Body() chats:Chat): Promise<ResponceT> {
-    return await this.chatService.createChat(chats)
+  async createChat(@Body() chat:Chat): Promise<ResponceT> {
+    return await this.chatService.createChat(chat)
   }
 
   @Put()
-  async updateChat(@Body() chats:Chat): Promise<ResponceT> {
-    return await this.chatService.updateChat(chats)
+  async updateChat(@Body() chat:Chat): Promise<ResponceT> {
+    return await this.chatService.updateChat(chat)
   }
 
   @Delete(":id")
