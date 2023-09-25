@@ -17,7 +17,10 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
 
   // Get
   get(custom_id: string): Promise<any> {
-    return this._repository.findOne({"custom_id":custom_id}).populate(this._populateOnFind).exec();
+    return this._repository
+      .findOne({ custom_id: { $eq: custom_id } })
+      .populate(this._populateOnFind)
+      .exec();
   }
 
   getOneBy(key: any, value: any): Promise<any> {
@@ -31,21 +34,18 @@ export class MongoGenericRepository<T> implements IGenericRepository<T> {
     return this._repository.find().populate(this._populateOnFind).exec();
   }
 
-  getAllBy(obj:any): Promise<T[]> {
-    return this._repository
-      .find(obj)
-      .populate(this._populateOnFind)
-      .exec();
+  getAllBy(obj: any): Promise<T[]> {
+    return this._repository.find(obj).populate(this._populateOnFind).exec();
   }
 
   // Update
   update(custom_id: string, item: T): Promise<T> {
-    return this._repository.findOneAndUpdate({ "custom_id": custom_id }, item);
+    return this._repository.findOneAndUpdate({ custom_id:  { $eq: custom_id } }, item);
   }
 
   updateOneBy(key: any, value: any, item: T): Promise<any> {
     return this._repository
-      .updateOne({ [key]: value },item)
+      .updateOne({ [key]: value }, item)
       .populate(this._populateOnFind)
       .exec();
   }
