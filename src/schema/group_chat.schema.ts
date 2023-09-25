@@ -38,15 +38,15 @@ export const Group_chatSchema = SchemaFactory.createForClass(Group_chat);
 export const groupChatPostSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30),
   name: Joi.string().min(3).max(30).required(),
-  admins: Joi.array().required(),
-  members: Joi.array().required(),
+  admins: Joi.array().min(1).max(100).required(),
+  members: Joi.array().min(1).max(10000).required(),
 });
 
 export const groupChatPutSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
   name: Joi.string().min(3).max(30),
-  admins: Joi.string().min(3).max(1000),
-  members: Joi.string().min(3).max(1000000),
+  admins: Joi.array().min(1).max(100),
+  members: Joi.array().min(1).max(10000),
 });
 
 

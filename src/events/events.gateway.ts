@@ -58,7 +58,7 @@ export class EventsGateway {
   }
  
   // find and send new message notification every 1 sec
-  @SubscribeMessage('sendMessageNotification')
+  @SubscribeMessage('getMessageNotification')
   async getNewMessages(@MessageBody() userInfo: { custom_id: string }) {
     await this.sendRecivedMessagePeriodically({
       custom_id: userInfo.custom_id,
@@ -66,12 +66,12 @@ export class EventsGateway {
   }
 
   // Stop notification send
-  @SubscribeMessage('stopSendingMessageNotification')
-  stopSendingData() {
+  @SubscribeMessage('stopGettingMessageNotification')
+  stopGettingData() {
     clearInterval(this.notificationInterval);
     return {
       is_success: true,
-      log: 'Sending message notification stopped successfully',
+      log: 'Getting message notification stopped successfully',
     };
   }
 

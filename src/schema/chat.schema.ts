@@ -67,7 +67,6 @@ export const chatPostSchema = Joi.object({
   sender_custom_id: Joi.string().min(3).max(30).required(),
   reciver_custom_id: Joi.string().min(3).max(30).required(),
   chat_room_id: Joi.string().min(3).max(30).required(),
-  is_mentioned: Joi.boolean().required(),
   mentioned_person_custom_id: Joi.string().min(11).max(30),
   message: Joi.string().min(1).max(300).required(),
 });

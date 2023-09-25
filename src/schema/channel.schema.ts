@@ -33,17 +33,17 @@ export const ChannelSchema = SchemaFactory.createForClass(Channel);
 
 // * Joi
 export const channelPostSchema = Joi.object({
-  custom_id: Joi.string().min(12).max(30).required(),
+  custom_id: Joi.string().min(12).max(30),
   name: Joi.string().min(3).max(30).required(),
-  admins: Joi.string().min(3).max(30).required(),
-  members: Joi.string().min(3).max(30).required(),
+  admins: Joi.array().min(1).max(100).required(),
+  members: Joi.array().min(1).max(10000).required(),
 });
 
 export const channelPutSchema = Joi.object({
   custom_id: Joi.string().min(12).max(30).required(),
   name: Joi.string().min(3).max(30),
-  admins: Joi.string().min(3).max(30),
-  members: Joi.string().min(3).max(30),
+  admins: Joi.array().min(1).max(100),
+  members: Joi.array().min(1).max(1000),
 });
 
 export const channelGetSchema = Joi.object({
