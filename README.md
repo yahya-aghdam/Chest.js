@@ -1,6 +1,6 @@
 # Chest.js
 
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/scorpio-demon/Chest.js/codeql.yml)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/yahya-aghdam/Chest.js/codeql.yml)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Version](https://img.shields.io/badge/Version-1.0.1-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-20-blue)
@@ -59,10 +59,10 @@ Possibilities of this repo with WebSocket:
 </br>
 
 You can see examples of usage with postman example in here:
-<https://postman.com/scorpio-team/workspace/chest-js>
+<https://postman.com/yahya-aghdam/workspace/chest-js>
 
 First clone repo:
-`git clone https://github.com/scorpio-demon/Chest.js.git`
+`git clone https://github.com/yahya-aghdam/Chest.js.git`
 
 Go to the installed folder:
 `cd Chest.js`
